@@ -3,6 +3,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'iOpinio.services' is found in services.js
 // 'iOpinio.controllers' is found in controllers.js
+ionic.Platform.ready();
 angular.module('iOpinio', ['ionic', 'iOpinio.services', 'iOpinio.controllers'])
 
 
