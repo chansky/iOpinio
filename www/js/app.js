@@ -32,6 +32,12 @@ angular.module('directory', ['ionic', 'directory.services', 'directory.controlle
                 controller: 'registerPageCtrl'
             })
 
+            .state('createPoll', {
+                url:'/createPoll',
+                templateUrl: 'templates/createPoll.html',
+                controller: 'createPollCtrl'
+            })
+
             .state('employee-index', {
                 url: '/employees',
                 templateUrl: 'templates/employee-index.html',
