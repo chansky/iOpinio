@@ -37,12 +37,12 @@ angular.module('directory.controllers', [])
         });
     })
 
-    .controller('homeCtrl', function ($scope) {
-
-    }) 
-
-    .controller('loginPageCtrl', function($scope, $location){
+    .controller('homeCtrl', function ($scope, $location) {
         $scope.changeView = function(view){
             $location.path(view);
         }
+    }) 
+
+    .controller('loginPageCtrl', function($scope){
+
     });   
