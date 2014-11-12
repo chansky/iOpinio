@@ -48,5 +48,8 @@ angular.module('directory.controllers', [])
     })
 
     .controller('loginPageCtrl', function($scope, $location){
-
+        $scope.submitLogin = function(){
+            console.log("username is: "+$scope.username);
+            console.log("password is: "+ $scope.password);
+        }
     });   
