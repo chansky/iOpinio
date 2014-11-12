@@ -1,42 +1,6 @@
-angular.module('directory.controllers', [])
+angular.module('iOpinio.controllers', [])
 
-    .controller('EmployeeIndexCtrl', function ($scope, EmployeeService) {
-
-        $scope.searchKey = "";
-
-        $scope.clearSearch = function () {
-            $scope.searchKey = "";
-            findAllEmployees();
-        }
-
-        $scope.search = function () {
-            EmployeeService.findByName($scope.searchKey).then(function (employees) {
-                $scope.employees = employees;
-            });
-        }
-
-        var findAllEmployees = function() {
-            EmployeeService.findAll().then(function (employees) {
-                $scope.employees = employees;
-            });
-        }
-
-        findAllEmployees();
-
-    })
-
-    .controller('EmployeeDetailCtrl', function ($scope, $stateParams, EmployeeService) {
-        EmployeeService.findById($stateParams.employeeId).then(function(employee) {
-            $scope.employee = employee;
-        });
-    })
-
-    .controller('EmployeeReportsCtrl', function ($scope, $stateParams, EmployeeService) {
-        EmployeeService.findByManager($stateParams.employeeId).then(function(employees) {
-            $scope.employees = employees;
-        });
-    })
-
+    
     .controller('homeCtrl', function ($scope, $location) {
         $scope.changeView = function(view){
             $location.path(view);
@@ -47,14 +11,15 @@ angular.module('directory.controllers', [])
 
     })
 
-    .controller('loginPageCtrl', function($scope, $location){
+    .controller('loginPageCtrl', ['$scope', 'iOpinio', function($scope, iOpinio){
         $scope.submitLogin = function(){
-            console.log("username is: "+$scope.username);
-            console.log("password is: "+ $scope.password);
+            console.log("username is: " + $scope.username);
+            console.log("password is: " + $scope.password);
             var u = $scope.username;
             var p = $scope.password;
             if(u!='' && p!=''){
-                $.post("https://web.engr.illinois.edu/~chansky2/login.php",{username:u,password:p},function(res){ 
+                iOpinio.create(u, p).success(function(res){ 
+                    console.log("the db access returned: " +res);
                     if(res[1]==='t'){
                         $location.path("createPoll");  //this line is a f'n miracle     
                     }
@@ -70,7 +35,7 @@ angular.module('directory.controllers', [])
             }
             return false;
         }
-    })
+    }])
 
     .controller('createPollCtrl', function($scope, $location){
 
