@@ -1,23 +1,20 @@
-<div data-role="content" id="loginPageContent" style="height:100vh; width:100vw">
     <h2 style="text-align:center"> Welcome back! </h2>
-        <form id="loginForm">
 
-            <div data-role="fieldcontain" class="ui-hide-label">
-                <label for="username"> Username: </label>
-                <input type="text" name="username" id="username" value="" placeholder="Username"/>
-            </div>
 
-            <div data-role="fieldcontain" class="ui-hide-label">
-                <label for="password"> Password: </label>
-                <input type="password" name="password" id="password" value="" placeholder="Password"/>
-            </div>
-
-            <input type="submit" value="Login" id="submitButton" data-theme="b">
-            
-        </form>
+    <div class="list" id="loginForm">
+        <label class="item item-input" id="username">
+            <span class="input-label" >Username</span>
+            <input type="text">
+        </label>
+        <label class="item item-input" id="password">
+            <span class="input-label" >Password</span>
+            <input type="password">
+        </label>
     </div>
-    <!--End of login form-->
-    <div data-role="ForgotPasswordButton">
-        <input type="button" value="Forgot Password?" id="ForgotPasswordButton" onclick="ForgotPassword()">
-    </div> 
-</div>
+    <button class="button button-large button-energized" id="submitButton">
+      Submit
+    </button>
+
+    <button class="button button-large button-assertive" id="ForgotPasswordButton" ng-click="ForgotPassword()">
+        Forgot Password
+    </button> 
