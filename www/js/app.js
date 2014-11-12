@@ -26,6 +26,12 @@ angular.module('directory', ['ionic', 'directory.services', 'directory.controlle
                 controller: 'loginPageCtrl'
             })
 
+            .state('registerPage', {
+                url:'/registerPage',
+                templateUrl: 'templates/registerPage.html',
+                controller: 'registerPageCtrl'
+            })
+
             .state('employee-index', {
                 url: '/employees',
                 templateUrl: 'templates/employee-index.html',

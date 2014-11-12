@@ -43,6 +43,10 @@ angular.module('directory.controllers', [])
         }
     }) 
 
-    .controller('loginPageCtrl', function($scope){
+    .controller('registerPageCtrl', function($scope, $location){
+
+    })
+
+    .controller('loginPageCtrl', function($scope, $location){
 
     });   
