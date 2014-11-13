@@ -1,43 +1,33 @@
-<div data-role="content" id="createPollContent"  style="height:80vh">
-                        <form id="poll" data-theme="e">
-                    <div data-role="fieldcontain" class="ui-hide-label">
-                        <label for="question"> Question: </label>
-                        <input type="text" name="question" id="question" placeholder="Question"/>
-                    </div>
-                    <br>
-                    
-                    <ul id="options-list" data-role="listview">
-                    </ul>
-                    
-                    <br>
-                    <div data-role="controlgroup" data-inline="true">
-                        <input type="text" id="add-option-text" data-wrapper-class="controlgroup-textinput ui-btn" placeholder="Add Option?">
-                        
-                    </div>
+<ion-content has-header="true" padding="true">
+  <div class="list" id="poll">
+    <label class="item item-input">
+      <input type="text" id="question" placeholder="Question?" ng-model="question">
+    </label>
+    <ul class="list" id="options-list">
+    </ul>
+    <div data-role="controlgroup" data-inline="true">
+        <input type="text" id="add-option-text" data-wrapper-class="controlgroup-textinput ui-btn" placeholder="Add Option?">
+        <button class="button" id="add-option-button" ng-click="add_option_textFN();"> Add </button>
+    </div>
 
-                    <input type="button" id="add-option-button"  value="Add" onclick="add_option_textFN();" width="20" />
-                    <input type="checkbox" name="checkbox-1" id="INSTABOX" class="custom" style="margin:15px"/>
-                    <label for="checkbox-1" style="color:black">INSTA</label>
-              </div>
+    <input type="checkbox" name="checkbox-1" id="INSTABOX" class="custom" style="margin:15px"/>
+    <label for="checkbox-1" style="color:black">INSTA</label>
 
 
-                    <select class="basic" id="timeOptions">
-                        <option value="">End The Poll in...</option>
-                        <option>1 Minute</option>
-                        <option>5 Minutes</option>
-                        <option>10 Minutes</option>
-                        <option>30 Minutes</option>
-                        <option>1 Hour</option>
-                        <option>1 Day</option>
-                        <option>1 Week</option>
+    <select class="basic" id="timeOptions">
+        <option value="">End The Poll in...</option>
+        <option>1 Minute</option>
+        <option>5 Minutes</option>
+        <option>10 Minutes</option>
+        <option>30 Minutes</option>
+        <option>1 Hour</option>
+        <option>1 Day</option>
+        <option>1 Week</option>
+    </select>
+    <input type="button" id="sendTo" value="Send To..." onclick="goToSendToPage();">
+  </div>
 
-
-                    </select>
-  <input type="button" id="sendTo" value="Send To..." onclick="goToSendToPage();">
-                </form>
-        </div>
-
-
+</ion-content>
 
       <div class="modal fade" id="basicModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
       <div class="modal-dialog">
