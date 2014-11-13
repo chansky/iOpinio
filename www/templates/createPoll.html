@@ -1,4 +1,7 @@
-<ion-content has-header="true" padding="true">
+<h2 style="text-align:center"> Create A Poll! </h2>
+<body ng-controller="createPollCtrl">
+<ion-content class="has-header" padding="true">
+<div class="padding">
   <div class="list" id="poll">
     <label class="item item-input">
       <input type="text" id="question" placeholder="Question?" ng-model="question">
@@ -26,6 +29,7 @@
     </select>
     <input type="button" id="sendTo" value="Send To..." onclick="goToSendToPage();">
   </div>
+</div>
 
 </ion-content>
 
@@ -53,3 +57,4 @@
     </div>
             </div>
         </div>
+      </body>
