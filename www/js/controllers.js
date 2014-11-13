@@ -11,10 +11,8 @@ angular.module('iOpinio.controllers', [])
 
     })
 
-    .controller('loginPageCtrl', ['$scope', 'iOpinio', function($scope, iOpinio){
+    .controller('loginPageCtrl', ['$scope', 'iOpinio', '$location', function($scope, iOpinio, $location){
         $scope.submitLogin = function(){
-            console.log("username is: " + $scope.username);
-            console.log("password is: " + $scope.password);
             var u = $scope.username;
             var p = $scope.password;
             if(u!='' && p!=''){
@@ -27,6 +25,9 @@ angular.module('iOpinio.controllers', [])
                       //  window.alert("incorrect username or password");
                         //$location.reload();
                     }
+                }).error(function(d){
+                    console.log("in error part");
+                    console.log(res);
                 });
             }
             else{
