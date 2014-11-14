@@ -9,16 +9,24 @@
     <ul class="list" id="options-list">
     </ul>
     <div data-role="controlgroup" data-inline="true">
+      <label class="item item-input">
         <input type="text" id="add-option-text" data-wrapper-class="controlgroup-textinput ui-btn" placeholder="Add Option?">
-        <button class="button" id="add-option-button" ng-click="add_option_textFN();"> Add </button>
+        <button class="button" id="add-option-button" ng-click="add_option()"> Add </button>
+      </label>
     </div>
-
-    <input type="checkbox" name="checkbox-1" id="INSTABOX" class="custom" style="margin:15px"/>
-    <label for="checkbox-1" style="color:black">INSTA</label>
-
-
-    <select class="basic" id="timeOptions">
-        <option value="">End The Poll in...</option>
+  <li class="item item-checkbox">
+     <label class="checkbox">
+       <input type="checkbox" name="checkbox-1" id="INSTABOX">
+     </label>
+     Insta
+  </li>
+    <div class="list">
+    <label class="item item-input item-select">
+      <div class="input-label">
+        End the Poll In...
+      </div>
+    <select>
+        <option selected>End The Poll in..</option>
         <option>1 Minute</option>
         <option>5 Minutes</option>
         <option>10 Minutes</option>
@@ -27,7 +35,9 @@
         <option>1 Day</option>
         <option>1 Week</option>
     </select>
-    <input type="button" id="sendTo" value="Send To..." onclick="goToSendToPage();">
+    </label>
+  </div>
+    <button class="button" id="sendTo" ng-click="goToSendToPage()"> Send To... </button>
   </div>
 </div>
 

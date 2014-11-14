@@ -15,6 +15,8 @@ angular.module('iOpinio.controllers', [])
         $scope.submitLogin = function(){
             var u = $scope.username;
             var p = $scope.password;
+            console.log(u);
+            console.log(p);
             if(u!='' && p!=''){
                 iOpinio.create(u, p).success(function(res){ 
                     console.log("the db access returned: " +res);
@@ -40,12 +42,9 @@ angular.module('iOpinio.controllers', [])
 
     .controller('createPollCtrl', function($scope, $location){
       options=[]; photos=[]; //hopefully this doesn't screw things up, added 7-28-14
-  
-   
-            $("#add-option-button").on("tap", function(){
-
-            //e.preventDefault();
-          //  window.alert("Adding option");
+                
+        $scope.add_option = function(){
+            console.log("clicked add option");
             var field=document.getElementById("add-option-text");
             console.log("yoooooo: "+$(field).val());
             tImgID="tmppic"+optionCounter;
@@ -65,8 +64,8 @@ angular.module('iOpinio.controllers', [])
                 window.alert("Nothing to add!",function(){});
             }
             $("#createPoll").trigger("create");
+        }
 
-        });
         $('#options-list').on('click', '#remove-option-button', function(event) {
             console.log("remove clicked on");
             tImgID="tmppic"+(optionCounter);  //used to be -1
