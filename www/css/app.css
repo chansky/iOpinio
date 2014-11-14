@@ -26,3 +26,10 @@
     -moz-background-size: cover;
     background-size: cover;
 }
+
+.boston{
+	background: url(../img/boston.jpg) no-repeat center center fixed; 
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+}
