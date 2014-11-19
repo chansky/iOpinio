@@ -25,6 +25,10 @@ angular.module('iOpinio.controllers', [])
 
     })
 
+    .controller('sendToPageCtrl', function($scope, $location){
+        
+    })
+
     .controller('loginPageCtrl', ['$scope', 'iOpinio', '$location', function($scope, iOpinio, $location){
         $scope.submitLogin = function(){
             var u = $scope.username;
@@ -60,7 +64,15 @@ angular.module('iOpinio.controllers', [])
 
       $scope.options=[]; 
       $scope.photos=[]; 
-                
+      $scope.timeOptions = [
+          {time:'1 Minute'},
+          {time:'5 Minutes'},
+          {time:'10 Minutes'},
+          {time:'30 Minutes'},
+          {time:'1 Hour'},
+          {time:'1 Day'},
+          {time:'1 Week'}
+      ];          
         $scope.add_option = function(){
             console.log("clicked add option");
            // var field=document.getElementById("add-option-text");
@@ -82,6 +94,124 @@ angular.module('iOpinio.controllers', [])
                 //window.alert("Nothing to add!",function(){});
             }
             //$("#createPoll").trigger("create");
+        }
+
+        $scope.goToSendToPage = function(){
+            console.log("clicked go to send to page");
+            var isInsta= $scope.INSTABOX;
+            if(!isInsta){
+              isInsta="0";
+            }
+            var question = $scope.question;
+            var ddl = $scope.mytimeOptions.time;
+            console.log("selected time: "+ddl);
+
+            var selectedValue = ddl;
+            var d = new Date();
+            var seconds = d.getUTCSeconds();
+            var minutes = d.getUTCMinutes();
+            var hour = d.getUTCHours();
+            var year = d.getUTCFullYear();
+            var month = d.getUTCMonth()+1; // beware: January = 0; February = 1, etc.  //need +1 b/c of php
+            var day = d.getUTCDate();
+            //second set of these values for dissapear time
+            var s, m, h, y, mo, d;
+            y=year;
+            mo=month;
+            s=seconds;
+            h=hour;
+            m=minutes;
+            d=day;
+            var noTimePicked=0;
+            if(selectedValue=="1 Minute"){
+                minutes=minutes+1;
+                m=minutes+1;
+            }
+            else if(selectedValue=="5 Minutes"){
+                minutes=minutes+5;
+                m=minutes+5;
+            }
+            else if(selectedValue=="10 Minutes"){
+                minutes=minutes+10;
+                m=minutes+10;
+            }
+            else if (selectedValue=="30 Minutes"){
+                minutes=minutes+30;
+                m=minutes+30;
+            }
+            else if (selectedValue=="1 Hour"){
+                hour=hour+1;
+                h=hour+1;
+            }
+            else if (selectedValue=="1 Day"){
+                day=day+1;
+                d=day+1;
+            }
+            else if (selectedValue=="1 Week"){
+                day=day+7;
+                d=day+7
+            }
+            else{
+                noTimePicked=1;
+            }
+            //seems like the below should only happen if no time picked is still equal to 0...
+            if(minutes>=60){
+              minutes=minutes%60;
+              hour=hour+1;
+            }
+            if(m>=60){
+              m=m%60;
+              h=h+1;
+            }
+            if(hour>=24){
+              hour=hour%24;
+              day=day+1;
+            }
+            if(h>=24){
+              h=h%24;
+              d=d+1;
+            }
+            if(day>daysInMonth(month,year)){
+              day=day-daysInMonth(month,year);
+              month=month+1;
+            }
+            if(d>daysInMonth(mo, y)){
+              d=d-daysInMonth(mo, y);
+              mo=mo+1;
+            }
+            if(month>11){
+              month=0;
+              year=year+1;
+            }
+            if(mo>11){
+              mo=0;
+              y=y+1;
+            }
+            if(month<10){  //need this to make php and sql happy
+                month="0"+month;
+            }
+            if(m<10){
+              m="0"+m;
+            }
+           var et="";
+           var dt="";
+           if(noTimePicked!=1){
+                var et=year+"-"+month+"-"+day+" "+hour+":"+minutes+":"+seconds;
+                var dt=y+"-"+mo+"-"+d+" "+h+":"+m+":"+s;
+            }
+            var allPollInfo={'endTime': et, 'optionsArr':options, 'isInsta': isInsta, 'question': question, 'photoArr': photos, 'disappearTime':dt};
+            if(typeof(window.localStorage) != 'undefined'){ 
+                window.localStorage.setItem('allPollInfo', JSON.stringify(allPollInfo));
+            } 
+            else{ 
+                window.alert("storage failed...");
+                console.log("store FAILED");
+                throw "window.localStorage, not defined"; 
+            }
+            optionCounter=0;
+            //options=[];  //testing empty  
+            //photos=[];  //testing empty
+            $location.path("sendToPage");
         }
         /*
         $('#options-list').on('click', '#remove-option-button', function(event) {
@@ -122,13 +252,6 @@ angular.module('iOpinio.controllers', [])
 
            $(this).parent().parent().parent().parent().remove();
 
-        });
-        $("#sendTo").on("tap",function(e){
-            console.log("# options being sent: "+options.length);
-         e.preventDefault();
-        });
-        $('#options-list').delegate('li', 'vclick', function() {
-            console.log("the list item clicked was: "+this.id);
-            WickedIndex = this.id;
-         });  */
+        });  */
+
     });

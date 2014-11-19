@@ -1,20 +1,16 @@
 <h2 style="text-align:center"> Create A Poll! </h2>
-<body ng-controller="createPollCtrl">
-<ion-content class="has-header" padding="true" scroll="true" direction="y">
-<div class="padding">
-
-  <ion-content ng-controller="createPollCtrl" class="list" id="poll" scroll="true" direction="y">
+<!--<ion-content class="has-header" padding="true" scroll="true" direction="y">  -->
+  <ion-content ng-controller="createPollCtrl" class="list" id="poll" scroll="true" direction="y" scroll-detector>
     <label class="item item-input">
       <input type="text" id="question" placeholder="Question?" ng-model="question">
     </label>
-    <ul class="list" id="optionsList">
-    </ul>
-          <ion-item ng-repeat="option in options" option="option" padding="true">
-              <a class="item item-icon-left">
-              <i class="icon ion-camera"></i>
-              <p>{{ option.optionText }}</p>
-              </a>
-          </ion-item>
+    <ul class="list" id="optionsList"></ul>
+      <ion-item ng-repeat="option in options" option="option" padding="true">
+          <a class="item item-icon-left">
+            <i class="icon ion-camera"></i>
+            <p>{{ option.optionText }}</p>
+          </a>
+      </ion-item>
     <div data-role="controlgroup" data-inline="true">
       <label class="item item-input">
         <input type="text" id="addOptionText" placeholder="Add Option?" ng-model="addOptionText">
@@ -26,55 +22,24 @@
 
   <li class="item item-checkbox">
      <label class="checkbox">
-       <input type="checkbox" name="checkbox-1" id="INSTABOX">
+       <input type="checkbox" name="checkbox-1" id="INSTABOX" ng-model="INSTABOX">
      </label>
      Insta
   </li>
-    <div class="list">
+  <div class="list">
     <label class="item item-input item-select">
       <div class="input-label">
         End the Poll In...
       </div>
-    <select>
-        <option selected>End The Poll in..</option>
-        <option>1 Minute</option>
-        <option>5 Minutes</option>
-        <option>10 Minutes</option>
-        <option>30 Minutes</option>
-        <option>1 Hour</option>
-        <option>1 Day</option>
-        <option>1 Week</option>
-    </select>
+      <select ng-model="mytimeOptions" ng-options="t.time for t in timeOptions">
+      <option value="">-- choose time --</option>
+      </select>
+    <br>
     </label>
   </div>
     <button class="button" id="sendTo" ng-click="goToSendToPage()"> Send To... </button>
-  </div>
-</div>
+  </ion-content>
 
-</ion-content>
 
-      <div class="modal fade" id="basicModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
 
-      <div data-role="header">
-        <h1>Photo Menu</h1>
-      </div>
-
-      <div data-role="main" class="ui-content">
- 
-    <button onclick="capturePhoto();">Capture Photo</button> <br>
-    <button onclick="capturePhotoEdit();">Capture Editable Photo</button> <br>
-    <button onclick="getPhoto(pictureSource.PHOTOLIBRARY);">From Photo Library</button><br>
-    <button onclick="getPhoto(pictureSource.SAVEDPHOTOALBUM);">From Photo Album</button><br>
-    <button type="button" data-dismiss="modal">Close</button>
-
-      </div>
-
-      <div data-role="footer">
-        <h1>Footer Text</h1>
-      </div>
-    </div>
-            </div>
-        </div>
-      </body>
+      

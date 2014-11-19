@@ -22,21 +22,27 @@ angular.module('iOpinio', ['ionic', 'iOpinio.services', 'iOpinio.controllers'])
             })
 
             .state('loginPage', {
-                url:'/loginPage',
+                url: '/loginPage',
                 templateUrl: 'templates/loginPage.html',
                 controller: 'loginPageCtrl'
             })
 
             .state('registerPage', {
-                url:'/registerPage',
+                url: '/registerPage',
                 templateUrl: 'templates/registerPage.html',
                 controller: 'registerPageCtrl'
             })
 
             .state('createPoll', {
-                url:'/createPoll',
+                url: '/createPoll',
                 templateUrl: 'templates/createPoll.html',
                 controller: 'createPollCtrl'
+            })
+
+            .state('sendToPage', {
+                url:'/sendToPage',
+                templateUrl: 'templates/sendToPage.html',
+                controller: 'sendToPageCtrl'
             })
 
 
