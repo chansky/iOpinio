@@ -1,3 +1,17 @@
+    var optionCounter=0; var uniquePhotoCount=0; var photos = []; var WickedIndex;  var options = [];
+    var tImgID;
+    var pictureSource;   // picture source
+    var destinationType; // sets the format of returned value
+
+function option(){
+  optionText="";
+  containsImg=0;
+  counterNum=-1;
+}
+function daysInMonth(month,year) {
+    return new Date(year, month, 0).getDate();
+}
+
 angular.module('iOpinio.controllers', [])
 
     
@@ -40,32 +54,36 @@ angular.module('iOpinio.controllers', [])
         }
     }])
 
+
     .controller('createPollCtrl', function($scope, $location){
-      options=[]; photos=[]; //hopefully this doesn't screw things up, added 7-28-14
+
+
+      $scope.options=[]; 
+      $scope.photos=[]; 
                 
         $scope.add_option = function(){
             console.log("clicked add option");
-            var field=document.getElementById("add-option-text");
-            console.log("yoooooo: "+$(field).val());
+           // var field=document.getElementById("add-option-text");
+            console.log("yoooooo: "+$scope.addOptionText);
             tImgID="tmppic"+optionCounter;
-            var option_text = $("#add-option-text").val();
+            var option_text = $scope.addOptionText;
             var tempObj= new option();
             tempObj.optionText=option_text;
             tempObj.containsImg=0;
             tempObj.counterNum=optionCounter;       
-            options.push(tempObj); 
+            $scope.options.push(tempObj); 
           //  window.alert("option text: "+option_text);  
             if(option_text !== ''){
-                $("#options-list").append('<li id="'+optionCounter+'"><div class="ui-grid-b"><div class="ui-block-a" style="width: 30%;"><div data-role="fieldcontain"><a id="'+optionCounter+'" href="#createPoll" class="btn btn-lg btn-success" data-toggle="modal" data-target="#basicModal"><span class="ui-btn-inner ui-btn-corner-all"><img style="width:60px;height:60px;" src="img/default_pic.png" id="'+tImgID+'"></span></a></div></div><div class="ui-block-b" style="width: 60%;"><div data-role="fieldcontain"><h2 id="otext">'+ option_text +'</h2></div></div><div class="ui-block-c" style="width: 6%; padding-top: 10px; float: right;"><div style="float: right;"><input type="button" id="remove-option-button" value="remove"/></div></div></div></li>').listview("refresh");          
-                $("#add-option-text").val("");
+             //   $scope.optionsList.append('<li id="'+optionCounter+'"><div class="ui-grid-b"><div class="ui-block-a" style="width: 30%;"><div data-role="fieldcontain"><a id="'+optionCounter+'" href="#createPoll" class="btn btn-lg btn-success" data-toggle="modal" data-target="#basicModal"><span class="ui-btn-inner ui-btn-corner-all"><img style="width:60px;height:60px;" src="img/default_pic.png" id="'+tImgID+'"></span></a></div></div><div class="ui-block-b" style="width: 60%;"><div data-role="fieldcontain"><h2 id="otext">'+ option_text +'</h2></div></div><div class="ui-block-c" style="width: 6%; padding-top: 10px; float: right;"><div style="float: right;"><input type="button" id="remove-option-button" value="remove"/></div></div></div></li>').listview("refresh");          
+               // $scope.addOptionText;
                 optionCounter++;
             }
             else{
-                window.alert("Nothing to add!",function(){});
+                //window.alert("Nothing to add!",function(){});
             }
-            $("#createPoll").trigger("create");
+            //$("#createPoll").trigger("create");
         }
-
+        /*
         $('#options-list').on('click', '#remove-option-button', function(event) {
             console.log("remove clicked on");
             tImgID="tmppic"+(optionCounter);  //used to be -1
@@ -112,5 +130,5 @@ angular.module('iOpinio.controllers', [])
         $('#options-list').delegate('li', 'vclick', function() {
             console.log("the list item clicked was: "+this.id);
             WickedIndex = this.id;
-         });
+         });  */
     });

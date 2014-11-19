@@ -1,19 +1,29 @@
 <h2 style="text-align:center"> Create A Poll! </h2>
 <body ng-controller="createPollCtrl">
-<ion-content class="has-header" padding="true">
+<ion-content class="has-header" padding="true" scroll="true" direction="y">
 <div class="padding">
-  <div class="list" id="poll">
+
+  <ion-content ng-controller="createPollCtrl" class="list" id="poll" scroll="true" direction="y">
     <label class="item item-input">
       <input type="text" id="question" placeholder="Question?" ng-model="question">
     </label>
-    <ul class="list" id="options-list">
+    <ul class="list" id="optionsList">
     </ul>
+          <ion-item ng-repeat="option in options" option="option" padding="true">
+              <a class="item item-icon-left">
+              <i class="icon ion-camera"></i>
+              <p>{{ option.optionText }}</p>
+              </a>
+          </ion-item>
     <div data-role="controlgroup" data-inline="true">
       <label class="item item-input">
-        <input type="text" id="add-option-text" data-wrapper-class="controlgroup-textinput ui-btn" placeholder="Add Option?">
+        <input type="text" id="addOptionText" placeholder="Add Option?" ng-model="addOptionText">
         <button class="button" id="add-option-button" ng-click="add_option()"> Add </button>
       </label>
     </div>
+
+
+
   <li class="item item-checkbox">
      <label class="checkbox">
        <input type="checkbox" name="checkbox-1" id="INSTABOX">
