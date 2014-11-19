@@ -12,6 +12,14 @@ function daysInMonth(month,year) {
     return new Date(year, month, 0).getDate();
 }
 
+function alreadyContains(arr, testVal){
+    for(var i=0; i<arr.length; i++){
+        if(arr[i]==testVal)
+            return true;
+    }
+    return false;
+}
+
 angular.module('iOpinio.controllers', [])
 
     
@@ -25,7 +33,48 @@ angular.module('iOpinio.controllers', [])
 
     })
 
-    .controller('sendToPageCtrl', function($scope, $location){
+    .controller('sendToPageCtrl', function($scope, $location, iOpinio){
+        console.log("in sendTo page");
+        
+         $scope.contacts = [];
+        var fullNames= [];
+        $scope.groupNames=[];
+
+        iOpinio.get("https://web.engr.illinois.edu/~chansky2/buildGroup.php").success(function(resp){
+            console.log("response is: "+resp);
+            var obj = resp;            
+            console.log("obj[i][gn]: "+obj[0]["gn"]);
+            console.log("length of obj is: "+obj.length);
+            //console.log("obj[i].gn: "+obj[i].gn);
+            for(var i = 0; i < obj.length; i++) {
+             // if(inArray(obj[i].gn, groupNames)==-1)  //to prevent duplicates
+                console.log("obj at: "+i+" is: "+obj[i]["gn"]+"\n");
+                $scope.groupNames.push(obj[i]["gn"]);     
+            }
+          //  $("#sendToFrame").append('<fieldset id="groupNameCheckBoxes" data-role="controlgroup"><legend>Groups</legend></fieldset>');
+            //for (var i = 0; i < groupNames.length; i++) {
+              //  $("#groupNameCheckBoxes").append('<input type="checkbox" name="' + groupNames[i] + '" id="id' + i + '"><label for="id' + i + '">' + groupNames[i] + '</label>');
+           // }
+            //$("#sendToFrame").trigger("create");
+        });
+        iOpinio.get("https://web.engr.illinois.edu/~chansky2/getFriends.php").success(function(data){
+            var obj = data;
+            console.log("get Friends obj: "+obj);
+            console.log("obj[0]['username']: "+obj[0]["username"]);
+            for(var i = 0; i < obj.length; i++) {
+             // if(jQuery.inArray(obj[i].username, contacts)==-1)  //to prevent duplicates
+                if(!alreadyContains($scope.contacts, obj[i]["username"])){
+                    console.log("obj at: "+i+" is: "+obj[i]["username"]+"\n");
+                    $scope.contacts.push(obj[i]["username"]);     
+                }
+            }
+            //$("#sendToFrame").append('<fieldset id="sendToCheckboxes" data-role="controlgroup"><legend>Friends</legend></fieldset>');
+           // for (var i = 0; i < contacts.length; i++) {
+             //   $("#sendToCheckboxes").append('<input type="checkbox" name="' + contacts[i] + '" id="id' + i + '"><label for="id' + i + '">' + contacts[i] + '</label>');
+            //}
+            //$("#loadIsh").remove(); //removes the laoding icon
+            //$("#sendToFrame").trigger("create");
+        });  
         
     })
 
@@ -103,10 +152,11 @@ angular.module('iOpinio.controllers', [])
               isInsta="0";
             }
             var question = $scope.question;
-            var ddl = $scope.mytimeOptions.time;
-            console.log("selected time: "+ddl);
+            var selectedValue="null"
+            if($scope.mytimeOptions!=null)
+             selectedValue = $scope.mytimeOptions.time;
+            console.log("selected time: "+selectedValue);
 
-            var selectedValue = ddl;
             var d = new Date();
             var seconds = d.getUTCSeconds();
             var minutes = d.getUTCMinutes();

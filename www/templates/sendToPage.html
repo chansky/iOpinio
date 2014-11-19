@@ -1,8 +1,19 @@
-  <div data-role="header">
+<div data-role="header">
              <h1>Select Recipients</h1>
+</div>
 
-        </div>
-        <div data-role="content" id="contentStuff" style="height:100vh">
-          <div id = "sendToFrame"></div>
-          <a id="sendTo" data-role="button" onclick="send()"> Send!</a>
-          </div>
+<div data-role="content" id="contentStuff" style="height:100vh">
+      <ion-item ng-repeat="name in groupNames"  padding="true">
+          <a class="item item-icon-left">
+            <p>{{ name }}</p>
+          </a>
+      </ion-item>
+
+      <ion-item ng-repeat="username in contacts"  padding="true">
+          <a class="item item-icon-left">
+            <p>{{ username }}</p>
+          </a>
+      </ion-item>
+
+          <button class="button" id="sendTo" ng-click="send()"> Send!</a>
+</div>

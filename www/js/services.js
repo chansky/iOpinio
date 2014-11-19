@@ -16,6 +16,18 @@ angular.module('iOpinio.services',[]).factory('iOpinio', function($http){
                 });
             console.log ("temp returned val: "+request);
             return request;
+        },
+
+        get:function(s){
+                var stuff;
+                var request = $http({
+                    method: "get",
+                    url: s,
+                    headers: {'Content-Type': "application/x-www-form-urlencoded; charset=UTF-8"},
+                    data: stuff
+                });    
+
+                return request;        
         }
     }
 });
