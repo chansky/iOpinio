@@ -2,18 +2,21 @@
              <h1>Select Recipients</h1>
 </div>
 
-<div data-role="content" id="contentStuff" style="height:100vh">
       <ion-item ng-repeat="name in groupNames"  padding="true">
           <a class="item item-icon-left">
             <p>{{ name }}</p>
           </a>
       </ion-item>
 
-      <ion-item ng-repeat="username in contacts"  padding="true">
-          <a class="item item-icon-left">
-            <p>{{ username }}</p>
-          </a>
-      </ion-item>
+<ion-list ng-model="theUsernames">
+  <ion-item class="item item-checkbox" ng-repeat="username in contacts"  padding="true">
+     <label class="checkbox">
+       <input type="checkbox" name="checkbox-1" ng-model="username.checked" ng-checked="username.checked">
+     </label>
+     {{username.name}}
+  </ion-item>
+</ion-list>
 
-          <button class="button" id="sendTo" ng-click="send()"> Send!</a>
-</div>
+
+
+          <button class="button" id="sendTo" ng-click="sendInfo()" padding="true"> Send!</a>

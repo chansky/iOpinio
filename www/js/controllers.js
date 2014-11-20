@@ -8,13 +8,17 @@ function option(){
   containsImg=0;
   counterNum=-1;
 }
+function usernameObject(){
+    name="";
+    checked="false";
+}
 function daysInMonth(month,year) {
     return new Date(year, month, 0).getDate();
 }
 
 function alreadyContains(arr, testVal){
     for(var i=0; i<arr.length; i++){
-        if(arr[i]==testVal)
+        if(arr[i].name==testVal)
             return true;
     }
     return false;
@@ -51,11 +55,6 @@ angular.module('iOpinio.controllers', [])
                 console.log("obj at: "+i+" is: "+obj[i]["gn"]+"\n");
                 $scope.groupNames.push(obj[i]["gn"]);     
             }
-          //  $("#sendToFrame").append('<fieldset id="groupNameCheckBoxes" data-role="controlgroup"><legend>Groups</legend></fieldset>');
-            //for (var i = 0; i < groupNames.length; i++) {
-              //  $("#groupNameCheckBoxes").append('<input type="checkbox" name="' + groupNames[i] + '" id="id' + i + '"><label for="id' + i + '">' + groupNames[i] + '</label>');
-           // }
-            //$("#sendToFrame").trigger("create");
         });
         iOpinio.get("https://web.engr.illinois.edu/~chansky2/getFriends.php").success(function(data){
             var obj = data;
@@ -65,17 +64,92 @@ angular.module('iOpinio.controllers', [])
              // if(jQuery.inArray(obj[i].username, contacts)==-1)  //to prevent duplicates
                 if(!alreadyContains($scope.contacts, obj[i]["username"])){
                     console.log("obj at: "+i+" is: "+obj[i]["username"]+"\n");
-                    $scope.contacts.push(obj[i]["username"]);     
+                    temp= new usernameObject();
+                    temp.name=obj[i]["username"];
+                    $scope.contacts.push(temp);     
                 }
             }
-            //$("#sendToFrame").append('<fieldset id="sendToCheckboxes" data-role="controlgroup"><legend>Friends</legend></fieldset>');
-           // for (var i = 0; i < contacts.length; i++) {
-             //   $("#sendToCheckboxes").append('<input type="checkbox" name="' + contacts[i] + '" id="id' + i + '"><label for="id' + i + '">' + contacts[i] + '</label>');
-            //}
-            //$("#loadIsh").remove(); //removes the laoding icon
-            //$("#sendToFrame").trigger("create");
         });  
-        
+
+
+         $scope.sendInfo =function(){
+        var selected = [];
+        var groupsSelected=[];
+       /* $('#sendToCheckboxes input:checked').each(function() {
+            selected.push($(this).attr('name'));
+        });
+    */
+       // console.log("i can see contacts array is of length: "+$scope.contacts.length);
+            for(var i=0; i<$scope.contacts.length; i++){
+                console.log("val at "+i+" is: "+$scope.contacts[i].name);
+                console.log("val at "+i+" is: "+$scope.contacts[i].checked);
+                if($scope.contacts[i].checked==true)
+                    selected.push($scope.contacts[i].name);
+            }
+    /*
+        $('#groupNameCheckBoxes input:checked').each(function(){
+            groupsSelected.push($(this).attr('name'));
+        });
+    */
+           // console.log("1st group selected: "+groupsSelected[0]);
+    //get info from local storage
+        var info=(localStorage.getItem("allPollInfo"));
+        var parsedInfo=JSON.parse(info);
+        var et = parsedInfo["endTime"];  //weird ios only issue with this?
+        var dt= parsedInfo["disappearTime"];
+        var isInsta=parsedInfo["isInsta"];
+        var options=parsedInfo["optionsArr"];
+        var question=parsedInfo["question"];
+        var photos=parsedInfo["photoArr"];
+        console.log("example data, question: "+question);
+        console.log("endtime: "+et);
+        console.log("disappearTime: "+dt);
+       // window.alert("your poll is being created!");
+        iOpinio.post("https://web.engr.illinois.edu/~chansky2/addPollI.php",{question:question, num_options:options.length,
+            options:options, insta:isInsta, endtime:et, disappearTime:dt, receivers:selected, receivingGroups:groupsSelected}).success(function(res){
+            //window.alert("res: "+res);
+        //iOpinio.post("https://web.engr.illinois.edu/~chansky2/addPollI.php",parsedInfo).success(function(res){
+            console.log("the output of the call to addPollI: "+res);
+            var retVal=parseInt(res);
+            //console.log("res at 0 is: "+res[0]);
+            //console.log("res at 1 is: "+res[1]);
+            //console.log("ret val is: "+retVal);
+            $scope.uploadStuff(retVal, photos);
+            localStorage.removeItem("allPollInfo");
+            $location.path("createPoll");
+            //window.location.hash="createPoll";
+        }); 
+      }
+
+    $scope.uploadStuff =function(num, photos){
+        console.log("in upload stuff (the function that uploads the photos)");
+        console.log("photo length is: "+photos.length);
+        var fileName="";
+        var image=0;
+        if(photos.length>0)
+            image=1;
+        if(image==1){
+            for(var i=0; i<photos.length; i++){  
+                fileName=photos[i];
+                var uploadOptions = new FileUploadOptions();
+                uploadOptions.fileKey="file";
+                uploadOptions.fileName=num+".jpg";  //look at num
+                console.log("pic file name: "+uploadOptions.fileName);
+                uploadOptions.mimeType="image/jpg";
+                uploadOptions.chunkedMode=false;
+                //uploadOptions.correctOrientation= true;  //this didn't do anything
+             //   uploadOptions.chunkedMode = true;  //new
+                uploadOptions.headers = {Connection: "close"}; //new, this really helped android upload!
+                var params = new Object();
+                uploadOptions.params = params;
+                var ft = new FileTransfer();
+                ft.upload(fileName, encodeURI("https://web.engr.illinois.edu/~chansky2/uploadFile.php"), win, fail, uploadOptions, true);
+                num++;
+            }
+        }
+                    options=[]; photos=[];  //testing emptying   
+    }  
+          
     })
 
     .controller('loginPageCtrl', ['$scope', 'iOpinio', '$location', function($scope, iOpinio, $location){
@@ -96,7 +170,7 @@ angular.module('iOpinio.controllers', [])
                     }
                 }).error(function(d){
                     console.log("in error part");
-                    console.log(res);
+                    console.log(d);
                 });
             }
             else{
@@ -249,9 +323,10 @@ angular.module('iOpinio.controllers', [])
                 var et=year+"-"+month+"-"+day+" "+hour+":"+minutes+":"+seconds;
                 var dt=y+"-"+mo+"-"+d+" "+h+":"+m+":"+s;
             }
-            var allPollInfo={'endTime': et, 'optionsArr':options, 'isInsta': isInsta, 'question': question, 'photoArr': photos, 'disappearTime':dt};
+            var allPollInfo={'endTime': et, 'optionsArr':$scope.options, 'isInsta': isInsta, 'question': question, 'photoArr': photos, 'disappearTime':dt};
             if(typeof(window.localStorage) != 'undefined'){ 
-                window.localStorage.setItem('allPollInfo', JSON.stringify(allPollInfo));
+                console.log('storing local data');
+                window.localStorage['allPollInfo']= JSON.stringify(allPollInfo);
             } 
             else{ 
                 window.alert("storage failed...");
