@@ -66,6 +66,30 @@ angular.module('iOpinio.services',[]).factory('iOpinio', function($http){
                 });
             console.log ("temp returned val: "+request);
             return request;            
+        },
+
+        registerPost:function(url, data){
+                console.log("passing up: "+data);
+               // gender:g,phonenumber:ph,email:em,username:u,password:p,age:a,token:theToken,deviceID:deviceID,deviceType:deviceType
+                var request = $http({
+                    method: "post",
+                    url: url,
+                    headers: {'Content-Type': "application/x-www-form-urlencoded; charset=UTF-8"},
+                    params: {
+                        gender: data["gender"],
+                        phonenumber: data["phonenumber"],
+                        email: data["email"],
+                        username: data["username"],
+                        password: data["password"],
+                        age: data["age"],
+                        token: data["token"],
+                        deviceID: data["deviceID"],
+                        deviceType: data["deviceType"]
+                    }  
+                    
+                });
+            console.log ("temp returned val: "+request);
+            return request;             
         }
     }
 });

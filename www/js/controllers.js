@@ -33,7 +33,55 @@ angular.module('iOpinio.controllers', [])
         }
     }) 
 
-    .controller('registerPageCtrl', function($scope, $location){
+    .controller('registerPageCtrl', function($scope, $location, iOpinio){
+
+        $scope.submitRegisterForm=function(){
+            console.log("register clicked");
+            var g = $scope.Reggender;
+            var ph = $scope.Regphonenumber;
+            var em = $scope.Regemail;
+            var u = $scope.Regusername;
+            console.log("obtained username: "+u);
+            var p = $scope.Regpassword;
+            var a = $scope.Regage;
+            var theToken=1;
+            var deviceID=1;
+            var deviceType=1;
+
+            if(theToken!=-1&&deviceID!=-1){
+                var deviceType=-1;
+                    if(devicePlatform=="Android"){
+                        deviceType=1;
+                    }
+                    else{
+                        deviceType=2;
+                    }
+                var devicePlatform="chansky";
+                if(em!='' && u!='' && p!=''&& deviceID!=''){
+                    iOpinio.registerPost("https://web.engr.illinois.edu/~chansky2/register.php",{gender:g,phonenumber:ph,email:em,username:u,password:p,age:a,token:theToken,deviceID:deviceID,deviceType:deviceType}).success(function(res){
+                        console.log("res at 0: "+res[0]+" ,res at 1: "+res[1]+ ", res at 2: "+res[2]);
+                        if(res[2]=='t'){
+                            console.log("inside the res==t");
+                            $location.path(contactsPage);
+                        }
+                        console.log("return vals from register call: "+res);
+                    }); 
+                    for(var i=0; i<20000; i++){
+                        //do nothing
+                        if(i==19999)
+                            console.log("finished third round of doing nothing");
+                    }
+                    //window.alert(res);
+                    //window.alert("outside of post");
+                    console.log("outside of post");
+
+                }
+                else{
+                    window.alert("empty field(s)");
+                }
+            }
+        }
+
 
     })
 
