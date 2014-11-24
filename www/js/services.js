@@ -90,6 +90,39 @@ angular.module('iOpinio.services',[]).factory('iOpinio', function($http){
                 });
             console.log ("temp returned val: "+request);
             return request;             
+        },
+
+        phoneNumbersPost:function(url, data){
+                console.log("passing up: "+data);
+               // gender:g,phonenumber:ph,email:em,username:u,password:p,age:a,token:theToken,deviceID:deviceID,deviceType:deviceType
+                var request = $http({
+                    method: "post",
+                    url: url,
+                    headers: {'Content-Type': "application/x-www-form-urlencoded; charset=UTF-8"},
+                    params: {
+                        phonenumbers: data["phonenumbers"]
+                    }  
+                    
+                });
+            console.log ("temp returned val: "+request);
+            return request;               
+        },
+
+        followPost:function(url, data){
+                console.log("passing up: "+data);
+               // gender:g,phonenumber:ph,email:em,username:u,password:p,age:a,token:theToken,deviceID:deviceID,deviceType:deviceType
+                var request = $http({
+                    method: "post",
+                    url: url,
+                    headers: {'Content-Type': "application/x-www-form-urlencoded; charset=UTF-8"},
+                    params: {
+                        usernames: data["usernames"],
+                        type: data["type"]
+                    }  
+                    
+                });
+            console.log ("temp returned val: "+request);
+            return request;              
         }
     }
 });

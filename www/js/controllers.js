@@ -24,13 +24,43 @@ function alreadyContains(arr, testVal){
     return false;
 }
 
+function parsenum(pnum){
+    pnum = pnum.toString();
+    var num = "";
+    var count = 0;
+    var i = pnum.length-1;
+
+    while(count != 10){
+        if(pnum.charAt(i) !== '-'){
+            num = pnum.charAt(i)+ num;
+            count++;
+        }
+        i--;
+    }
+    return num;
+}  
+
 angular.module('iOpinio.controllers', [])
 
     
     .controller('homeCtrl', function ($scope, $location) {
+
+        ionic.Platform.ready(function() {
+            // hide the status bar using the StatusBar plugin
+            console.log("platform is ready");
+            StatusBar.hide();
+          });
         $scope.changeView = function(view){
             $location.path(view);
         }
+
+          $scope.reportEvent = function(event)  {
+            console.log('Reporting : ' + event.type);
+            
+            $timeout(function() {
+              $scope.data[event.type]++;
+            })
+          }
     }) 
 
     .controller('registerPageCtrl', function($scope, $location, iOpinio){
@@ -66,7 +96,7 @@ angular.module('iOpinio.controllers', [])
                         }
                         console.log("return vals from register call: "+res);
                     }); 
-                    for(var i=0; i<20000; i++){
+                 /*   for(var i=0; i<20000; i++){
                         //do nothing
                         if(i==19999)
                             console.log("finished third round of doing nothing");
@@ -74,8 +104,8 @@ angular.module('iOpinio.controllers', [])
                     //window.alert(res);
                     //window.alert("outside of post");
                     console.log("outside of post");
-
-                }
+                    */
+                }  
                 else{
                     window.alert("empty field(s)");
                 }
@@ -454,7 +484,7 @@ $ionicModal.fromTemplateUrl('modal.html', function($ionicModal) {
 
 
 
-    .controller('contactsPageCtrl', function($scope, $location){
+    .controller('contactsPageCtrl', function($scope, $location, iOpinio){
         console.log('contacts Page');
         var contactOptions = new ContactFindOptions();   //this used to be var options =... but i changed it
         contactOptions.filter = "";
@@ -477,32 +507,88 @@ $ionicModal.fromTemplateUrl('modal.html', function($ionicModal) {
                 }
             }
 
-            var usernames = [];
-            var fullnames = []; 
+            $scope.usernames = [];
             console.log("about to make the post request part of find contacts");
-             $.post("https://web.engr.illinois.edu/~chansky2/findContacts.php",{phonenumbers:pnums},function(res){
-               console.log("find contacts php returned: "+res);
+            pnums=JSON.stringify(pnums);
+             iOpinio.phoneNumbersPost("https://web.engr.illinois.edu/~chansky2/findContacts.php",{phonenumbers:pnums}).success(function(res){
+               console.log("find contacts php returned: "+res[0].username);
                if(res!="No"){  //never have tested this case (i'd need a phone who doesn't have my #)
-                    var obj = jQuery.parseJSON(res);   //or i'd have to remove my # from the DB
-                    //window.alert(obj);
+                  //  var obj = JSON.parse(res);   //or i'd have to remove my # from the DB
+                    var obj=res;
                     for(var i=0; i<obj.length; i++){
-                        usernames.push(obj[i].username);
-                       // fullnames.push(obj[i].fullname);
-                    }
-                    $("#frame").html('<fieldset id="contactsCheckboxes" data-role="controlgroup"><legend>Select who you want to follow:</legend></fieldset>');
-                    for(var i=0; i<usernames.length; i++){
-                        //document.write(contacts[i].phoneNumbers.length)
-                            $("fieldset").append('<input type="checkbox" name="' + usernames[i] + '" id="id' + i + '"><label for="id' + i + '">' + usernames[i] + '</label>');
-                    }   
-                    $("#frame").trigger("create");
-                    loaded = true;
+                        if(!alreadyContains($scope.usernames, obj[i].username)){
+                            console.log(obj[i].username);
+                            temp= new usernameObject();
+                            temp.name=obj[i].username;
+                            $scope.usernames.push(temp);
+                        }
+                    }  
                 }
                 else{
-                    window.location.hash="createPoll";
+                    $location.path("createPoll");
                 }
              });
-        }        
-    });
+        }
+        function onError(contacts){
+            console.log("WTF");
+            console.log(contacts);
+        }  
+
+        $scope.follow=function(){
+            var selected = [];
+            for(var i=0; i<$scope.usernames.length; i++){
+                console.log("val at "+i+" is: "+$scope.usernames[i].name);
+                console.log("val at "+i+" is: "+$scope.usernames[i].checked);
+                if($scope.usernames[i].checked==true)
+                    selected.push($scope.usernames[i].name);
+            }
+            //window.alert(selected);
+            selected=JSON.stringify(selected);
+            iOpinio.followPost("https://web.engr.illinois.edu/~chansky2/followContacts.php",{type:"follow", usernames:selected}).success(function(res){
+                //window.alert(res);
+                //window.location = "createPoll.html";
+                $location.path("createPoll");
+            });
+            //and also sign up to receive thier notifications (by default)
+         /*   $.post("https://web.engr.illinois.edu/~chansky2/addInsta.php",{type:"add", usernames:selected},function(res){
+                //window.alert(res);
+               $location.path("createPoll");
+            });  */
+        }
+        $scope.skip=function(){
+            $location.path("createPoll");
+        }         
+    })
+
+    .directive('detectGestures', function($ionicGesture) {
+  return {
+    restrict :  'A',
+
+    link : function(scope, elem, attrs) {
+      var gestureType = attrs.gestureType;
+
+      switch(gestureType) {
+        case 'swipe':
+          $ionicGesture.on('swipe', scope.reportEvent, elem);
+          break;
+        case 'swiperight':
+          $ionicGesture.on('swiperight', scope.reportEvent, elem);
+          console.log("swiped right");
+          break;
+        case 'swipeleft':
+          $ionicGesture.on('swipeleft', scope.reportEvent, elem);
+          break;
+        case 'doubletap':
+          $ionicGesture.on('doubletap', scope.reportEvent, elem);
+          break;
+        case 'tap':
+          $ionicGesture.on('tap', scope.reportEvent, elem);
+          break;
+      }
+
+    }
+  }
+});
 
 
     //modal stuff below
