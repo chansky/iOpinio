@@ -1,17 +1,24 @@
-<h2 style="text-align:center"> Create A Poll! </h2>
+<view title="'iOpinio'" class="padding pollbg" style="text-align:center" overflow-scroll="true" direction="y">
+
 <!--<ion-content class="has-header" padding="true" scroll="true" direction="y">  -->
-  <ion-content ng-controller="createPollCtrl" class="list" id="poll" scroll="true" direction="y" scroll-detector>
+
+  <ion-content ng-controller="createPollCtrl" overflow-scroll="true" class="list opt" id="poll" >
+  <div data-role="header">
+	<h2 style="text-align:center"> Create A Poll! </h2>
+  </div>
+    <div class="opt">
     <label class="item item-input">
       <input type="text" id="question" placeholder="Question?" ng-model="question">
     </label>
     <ul class="list" id="optionsList"></ul>
       <ion-item ng-repeat="option in options" option="option" padding="true">
           <a class="item item-icon-left">
-            <i class="icon ion-camera" ng-click="modal.show()"></i>
+            <i class="icon ion-camera"></i>
             <p>{{ option.optionText }}</p>
           </a>
       </ion-item>
-    <div data-role="controlgroup" data-inline="true">
+     </div>
+    <div class="opt" data-role="controlgroup" data-inline="true">
       <label class="item item-input">
         <input type="text" id="addOptionText" placeholder="Add Option?" ng-model="addOptionText">
         <button class="button" id="add-option-button" ng-click="add_option()"> Add </button>
@@ -20,13 +27,13 @@
 
 
 
-  <li class="item item-checkbox">
+  <li class="item item-checkbox opt">
      <label class="checkbox">
-       <input type="checkbox" name="checkbox-1" id="INSTABOX" ng-model="INSTABOX">
+       <input type="checkbox" name="checkbox-1" id="INSTABOX" ng-model="INSTABOX" style="text-align:right">
      </label>
-     Insta
+     Instant Poll?
   </li>
-  <div class="list">
+  <div class="list opt">
     <label class="item item-input item-select">
       <div class="input-label">
         End the Poll In...
@@ -38,20 +45,6 @@
     </label>
   </div>
     <button class="button" id="sendTo" ng-click="goToSendToPage()"> Send To... </button>
+  	
   </ion-content>
-
-
-    <script id="modal.html" type="text/ng-template">
-      <div class="modal">
-        <header class="bar bar-header bar-positive">
-          <h1 class="title">Im A Modal</h1>
-          <div class="button button-clear" ng-click="modal.hide()"><span class="icon ion-close"></span></div>
-        </header>
-        <content has-header="true" padding="true">
-          <p>This is a modal</p>
-        </content>
-      </div>
-    </script>
-
-
-      
+</view>      
