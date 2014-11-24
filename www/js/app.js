@@ -45,6 +45,12 @@ angular.module('iOpinio', ['ionic', 'iOpinio.services', 'iOpinio.controllers'])
                 controller: 'sendToPageCtrl'
             })
 
+            .state('contactsPage', {
+                url:'/contactsPage',
+                templateUrl: 'templates/contactsPage.html',
+                controller: 'contactsPageCtrl'
+            })
+
 
         // if none of the above states are matched, use this as the fallback
         $urlRouterProvider.otherwise('/home');

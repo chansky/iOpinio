@@ -62,7 +62,7 @@ angular.module('iOpinio.controllers', [])
                         console.log("res at 0: "+res[0]+" ,res at 1: "+res[1]+ ", res at 2: "+res[2]);
                         if(res[2]=='t'){
                             console.log("inside the res==t");
-                            $location.path(contactsPage);
+                            $location.path("contactsPage");
                         }
                         console.log("return vals from register call: "+res);
                     }); 
@@ -450,6 +450,58 @@ $ionicModal.fromTemplateUrl('modal.html', function($ionicModal) {
 
         });  */
 
+    })
+
+
+
+    .controller('contactsPageCtrl', function($scope, $location){
+        console.log('contacts Page');
+        var contactOptions = new ContactFindOptions();   //this used to be var options =... but i changed it
+        contactOptions.filter = "";
+        contactOptions.multiple = true;
+        var fields = ["displayName","phoneNumbers"];
+        console.log("about to call find contacts");
+        navigator.contacts.find(fields, onSuccess, onError, contactOptions);      
+        var loaded = false;
+        var pnums = [];  
+
+        function onSuccess(contacts) {
+            console.log("Success, found contacts");
+            for(var i=0; i<contacts.length; i++){
+                if(contacts[i].displayName){
+                    if(contacts[i].phoneNumbers != null){
+                        for(var j=0; j<contacts[i].phoneNumbers.length; j++){
+                            pnums.push(parsenum(contacts[i].phoneNumbers[j].value));
+                        }
+                    }
+                }
+            }
+
+            var usernames = [];
+            var fullnames = []; 
+            console.log("about to make the post request part of find contacts");
+             $.post("https://web.engr.illinois.edu/~chansky2/findContacts.php",{phonenumbers:pnums},function(res){
+               console.log("find contacts php returned: "+res);
+               if(res!="No"){  //never have tested this case (i'd need a phone who doesn't have my #)
+                    var obj = jQuery.parseJSON(res);   //or i'd have to remove my # from the DB
+                    //window.alert(obj);
+                    for(var i=0; i<obj.length; i++){
+                        usernames.push(obj[i].username);
+                       // fullnames.push(obj[i].fullname);
+                    }
+                    $("#frame").html('<fieldset id="contactsCheckboxes" data-role="controlgroup"><legend>Select who you want to follow:</legend></fieldset>');
+                    for(var i=0; i<usernames.length; i++){
+                        //document.write(contacts[i].phoneNumbers.length)
+                            $("fieldset").append('<input type="checkbox" name="' + usernames[i] + '" id="id' + i + '"><label for="id' + i + '">' + usernames[i] + '</label>');
+                    }   
+                    $("#frame").trigger("create");
+                    loaded = true;
+                }
+                else{
+                    window.location.hash="createPoll";
+                }
+             });
+        }        
     });
 
 
