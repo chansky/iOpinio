@@ -104,9 +104,14 @@ angular.module('iOpinio.controllers', [])
         console.log("example data, question: "+question);
         console.log("endtime: "+et);
         console.log("disappearTime: "+dt);
+        console.log("options looks like this: "+options);
+        console.log("parsed options looks like: "+JSON.stringify(options));
+        var betterOptions=JSON.stringify(options);
+        var betterReceivers = JSON.stringify(selected);
+        var betterGroups = JSON.stringify(groupsSelected);
        // window.alert("your poll is being created!");
         iOpinio.post("https://web.engr.illinois.edu/~chansky2/addPollI.php",{question:question, num_options:options.length,
-            options:options, insta:isInsta, endtime:et, disappearTime:dt, receivers:selected, receivingGroups:groupsSelected}).success(function(res){
+            options:betterOptions, insta:isInsta, endtime:et, disappearTime:dt, receivers:betterReceivers, receivingGroups:betterGroups}).success(function(res){
             //window.alert("res: "+res);
         //iOpinio.post("https://web.engr.illinois.edu/~chansky2/addPollI.php",parsedInfo).success(function(res){
             console.log("the output of the call to addPollI: "+res);
@@ -182,7 +187,20 @@ angular.module('iOpinio.controllers', [])
     }])
 
 
-    .controller('createPollCtrl', function($scope, $location){
+    .controller('createPollCtrl', function($scope, $location, $ionicModal){
+
+
+
+$ionicModal.fromTemplateUrl('modal.html', function($ionicModal) {
+        $scope.modal = $ionicModal;
+    }, {
+        // Use our scope for the scope of the modal to keep it simple
+        scope: $scope,
+        // The animation we want to use for the modal entrance
+        animation: 'slide-in-up'
+    });  
+
+
 
 
       $scope.options=[]; 
@@ -195,7 +213,8 @@ angular.module('iOpinio.controllers', [])
           {time:'1 Hour'},
           {time:'1 Day'},
           {time:'1 Week'}
-      ];          
+      ];    
+
         $scope.add_option = function(){
             console.log("clicked add option");
            // var field=document.getElementById("add-option-text");
@@ -217,6 +236,8 @@ angular.module('iOpinio.controllers', [])
                 //window.alert("Nothing to add!",function(){});
             }
             //$("#createPoll").trigger("create");
+            //$scope.openModal();
+            modal.show();
         }
 
         $scope.goToSendToPage = function(){
@@ -338,6 +359,8 @@ angular.module('iOpinio.controllers', [])
             //photos=[];  //testing empty
             $location.path("sendToPage");
         }
+
+
         /*
         $('#options-list').on('click', '#remove-option-button', function(event) {
             console.log("remove clicked on");
@@ -380,3 +403,7 @@ angular.module('iOpinio.controllers', [])
         });  */
 
     });
+
+
+    //modal stuff below
+

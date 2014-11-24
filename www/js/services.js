@@ -35,6 +35,7 @@ angular.module('iOpinio.services',[]).factory('iOpinio', function($http){
                 console.log("num_options: "+data["num_options"]);
                 console.log("insta: "+data["insta"]);
                 console.log("endtime: "+data["endtime"]);
+                console.log("otpions: "+data["options"]);
            /* var formattedData='question='+data["question"]+
             '&num_options='+data["num_options"]+
             '&options='+data["options"]+
