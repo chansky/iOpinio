@@ -51,6 +51,18 @@ angular.module('iOpinio', ['ionic', 'iOpinio.services', 'iOpinio.controllers'])
                 controller: 'contactsPageCtrl'
             })
 
+            .state('mainCarousel',{
+                url: '/mainCarousel',
+                templateUrl: 'templates/mainCarousel.html',
+                controller: 'mainCarouselCtrl'
+            })
+
+            .state('feedPage', {
+                url:'/feedPage',
+                templateUrl: 'templates/feedPage.html',
+                controller: 'feedPageCtrl'
+            })
+
 
         // if none of the above states are matched, use this as the fallback
         $urlRouterProvider.otherwise('/home');

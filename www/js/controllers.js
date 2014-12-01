@@ -3,6 +3,24 @@
     var pictureSource;   // picture source
     var destinationType; // sets the format of returned value
 
+function onDeviceReady() {
+    console.log("device is ready");
+    StatusBar.hide();
+    pictureSource=navigator.camera.PictureSourceType;
+    destinationType=navigator.camera.DestinationType;
+    //document.addEventListener("pause", onPause, false);
+    //document.addEventListener("resume", onResume, false);
+    feedVisited=0; //a variable to control reloading the feed data.
+     windowWidth = window.innerWidth;
+     windowHeight = window.innerHeight;
+     console.log("screen width is: "+windowWidth+", height is: "+windowHeight);
+     deviceID=-1;
+     theToken=-1;
+     PUSHAPPS_APP_TOKEN="5ebcbd9a-8583-446e-81ee-f19e339fa88e";
+     YOUR_GOOGLE_PROJECT_ID="75213574961";
+   // console.log("destination type is: "+destinationType);
+}
+
 function option(){
   optionText="";
   containsImg=0;
@@ -47,6 +65,7 @@ angular.module('iOpinio.controllers', [])
 
         ionic.Platform.ready(function() {
             // hide the status bar using the StatusBar plugin
+            onDeviceReady();
             console.log("platform is ready");
             StatusBar.hide();
           });
@@ -245,7 +264,7 @@ angular.module('iOpinio.controllers', [])
                 iOpinio.create(u, p).success(function(res){ 
                     console.log("the db access returned: " +res);
                     if(res[1]==='t'){
-                        $location.path("createPoll");  //this line is a f'n miracle     
+                        $location.path("mainCarousel");  //this line is a f'n miracle     
                     }
                     else{
                       //  window.alert("incorrect username or password");
@@ -263,6 +282,177 @@ angular.module('iOpinio.controllers', [])
             return false;
         }
     }])
+
+    .controller('mainCarouselCtrl', function($scope, $location, $timeout, $ionicSlideBoxDelegate, $ionicScrollDelegate, $stateParams) {
+        console.log("in main carousel controller");
+        
+          //var delegate = $ionicScrollDelegate.$getByHandle('myScroll');
+
+          if($stateParams.slidenum) {
+            $timeout( function() {
+              $scope.$broadcast('slideBox.setSlide', $stateParams.slidenum);
+            }, 50);
+          }
+
+          $scope.dataSlide = {};
+          $scope.dataSlide.currSlide = $ionicSlideBoxDelegate.currentIndex();
+
+          $scope.slideChanged = function() {
+            console.log("slide changed");
+           // delegate.rememberScrollPosition('myScroll');
+            $scope.dataSlide.currSlide = $ionicSlideBoxDelegate.currentIndex();
+
+            $timeout( function() {
+              $ionicScrollDelegate.resize();
+            }, 50);
+          };
+
+
+
+    })
+
+    .controller('feedPageCtrl', function($scope, $location){
+         console.log('#personalFeed');
+        var usernames=[];
+        var PID=[];
+        var dataLength=0;
+        var endtime=[];
+        var timeRemaining=[];
+        if(feedVisited==0){  //just added for control of reload
+            console.log("feedVisited was 0 so we got data");
+            getFeedData();
+            feedVisited=1;
+        } //just added for control of reload
+        else{  //we already have feed data (and its in localStorage)
+            var endtime=jQuery.parseJSON(localStorage.getItem("endtimeArr"));
+            var usernames=jQuery.parseJSON(localStorage.getItem("userArr"));
+            var timeRemaining=jQuery.parseJSON(localStorage.getItem("timeRemainingArr"));
+            console.log("first endtime: "+endtime[0]);
+            dataLength=usernames.length;
+            displayFeed();
+        }
+/*
+        $('#feedList').delegate('li', 'vclick', function() {
+            var index = $(this).index();
+            var selectedIndex="selectedIndex";
+            window.localStorage.setItem(selectedIndex, $(this).index());  //i added this semi colon july 9th
+           console.log("Stopping timeCirlces and dataLength is: "+dataLength);
+          for(var i=0; i<dataLength; i++){
+            if(timeRemaining[i]>=0){
+                var input="."+i;
+                $(input).TimeCircles().stop();
+            }
+          }
+            window.location.hash="chart";
+        });
+         $("#refreshPersonalFeed").on("tap", function(){
+            console.log("refreshing feed");
+            console.log("Stopping timeCircles and dataLength is: "+dataLength);
+            for(var i=0; i<dataLength; i++){
+              if(timeRemaining[i]>=0){
+                    var input="."+i;
+                    $(input).TimeCircles().stop();
+                }
+            }
+            $('#feedList').empty();
+            resetFeedArrays();
+            getFeedData();            
+        });
+
+        function getFeedData(){
+            $.get("https://web.engr.illinois.edu/~chansky2/personalFeed.php",function(data){
+               // console.log("data: "+data);
+                if(data!= null && data!==undefined){    //VERY CRAPPY NULL CHECKER....
+                    var obj = jQuery.parseJSON( data );
+                    for(var i = 0; i < obj.length; i++) {
+                        usernames.push(obj[i].username);
+                        PID.push(obj[i].PID);
+                        endtime.push(obj[i].endtime);
+                        timeRemaining.push(obj[i].timeRemaining);
+                    }
+                    dataLength=usernames.length;
+                    displayFeed();
+                    var userArr="userArr";
+                    var endtimeArr="endtimeArr";
+                    var p_idArr= "p_idArr";
+                    var timeRemainingArr="timeRemainingArr";
+                    if(typeof(window.localStorage) != 'undefined'){ 
+                        window.localStorage.setItem(userArr, JSON.stringify(usernames));
+                        window.localStorage.setItem(endtimeArr, JSON.stringify(endtime));
+                        window.localStorage.setItem(p_idArr, JSON.stringify(PID));
+                        window.localStorage.setItem(timeRemainingArr, JSON.stringify(timeRemaining));
+                    } 
+                    else{ 
+                        console.log("store FAILED");
+                        throw "window.localStorage, not defined"; 
+                    }
+                }
+                else{
+                    var word="NO FOLLOWERS";
+                    $('#feedList').append('<li><a href="">' + word + '</a></li>').listview('refresh');
+                }
+            });  //this is clsing the get!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!    
+        }
+
+        function displayFeed(){
+            console.log("displayFeed called");
+            for (var j = 0; j < dataLength; j++) {   //not sure why this needs to be in the get
+                var clock="display:inline-block; width:100%; height:20%;";
+                var helperText="'s poll ends in: ";
+                var timeDiff=timeRemaining[j];
+                if(timeDiff<=0){
+                    helperText="'s poll has ended (but can still be viewed)";
+                }
+
+                var phrase='<li><a><h2>'+usernames[j]+helperText+'</h2><div class="'+j+'", data-timer="'+timeDiff+'", style="'+clock+'"></div></a></li>';
+                $('#feedList').append(phrase).listview('refresh');
+                //add the time circle for each row:
+                //console.log("endtime for item "+j+", is: "+endtime[j]);
+                if(timeDiff>0){
+                    var input="."+j;
+                    $(input).TimeCircles({ "animation": "smooth",
+                    "bg_width": 1.2,
+                    "fg_width": 0.1,
+                    "circle_bg_color": "#60686F", "count_past_zero": false, "time": {
+                    "Days": {
+                        "text": "Days",
+                        "color": "#FFCC66",
+                        "show": true
+                    },
+                    "Hours": {
+                        "text": "Hours",
+                        "color": "#99CCFF",
+                        "show": true
+                    },
+                    "Minutes": {
+                        "text": "Minutes",
+                        "color": "#BBFFBB",
+                        "show": true
+                    },
+                    "Seconds": {
+                        "text": "Seconds",
+                        "color": "#FF9999",
+                        "show": true
+                    }
+                    }});
+                }
+                //$(input).TimeCircles({total_duration: "Minutes"}).rebuild();
+
+            }
+                            $('#feedList').trigger('create');
+
+                $('#feedList').listview('refresh');
+        }
+
+        function resetFeedArrays(){
+            usernames=[];
+            PID=[];
+            dataLength=0;
+            endtime=[];
+            timeRemaining=[];
+        }
+        */
+    })
 
 
     .controller('createPollCtrl', function($scope, $location, $ionicModal){
