@@ -5,23 +5,16 @@
       <div data-role="header">
                    <h1>Select Recipients</h1>
       </div>
-
-
-      <!-- <div class="opt">
-      
+      <div class="opt">
       <ion-item ng-repeat="name in groupNames"  padding="true">
           <a class="item item-icon-left">
             <p>{{ name }}</p>
           </a>
       </ion-item>
-      </div> -->
+      </div>
       <div class="opt">
-      <label class="item item-input">
-        <i class="icon ion-search placeholder-icon"></i>
-        <input type="search" placeholder="Search" ng-model="name">
-      </label>
       <ion-list ng-model="theUsernames">
-        <ion-item class="item item-checkbox" ng-repeat="username in contacts | filter:name"  padding="true">
+        <ion-item class="item item-checkbox" ng-repeat="username in contacts"  padding="true">
            <label class="checkbox">
              <input type="checkbox" name="checkbox-1" ng-model="username.checked" ng-checked="username.checked">
            </label>
