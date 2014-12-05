@@ -383,7 +383,7 @@ angular.module('iOpinio.controllers', [])
                         $scope.endtime.push(obj[i].endtime);
                         $scope.timeRemaining.push(obj[i].timeRemaining);
                     }
-                    dataLength=usernames.length;
+                    dataLength=$scope.usernames.length;
                     displayFeed();
                     var userArr="userArr";
                     var endtimeArr="endtimeArr";
