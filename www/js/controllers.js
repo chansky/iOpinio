@@ -70,6 +70,7 @@ angular.module('iOpinio.controllers', [])
             StatusBar.hide();
           });
         $scope.changeView = function(view){
+            onDeviceReady();  //this shouldnt need to be here- REVIEW
             $location.path(view);
         }
 
@@ -85,6 +86,7 @@ angular.module('iOpinio.controllers', [])
     .controller('registerPageCtrl', function($scope, $location, iOpinio){
 
         $scope.submitRegisterForm=function(){
+            //onDeviceReady();
             console.log("register clicked");
             var g = $scope.Reggender;
             var ph = $scope.Regphonenumber;
@@ -264,7 +266,7 @@ angular.module('iOpinio.controllers', [])
                 iOpinio.create(u, p).success(function(res){ 
                     console.log("the db access returned: " +res);
                     if(res[1]==='t'){
-                        $location.path("mainCarousel");  //this line is a f'n miracle     
+                        $location.path("feedPage");  //this line is a f'n miracle     
                     }
                     else{
                       //  window.alert("incorrect username or password");
@@ -311,13 +313,13 @@ angular.module('iOpinio.controllers', [])
 
     })
 
-    .controller('feedPageCtrl', function($scope, $location){
+    .controller('feedPageCtrl', function($scope, $location, iOpinio){
          console.log('#personalFeed');
-        var usernames=[];
-        var PID=[];
-        var dataLength=0;
-        var endtime=[];
-        var timeRemaining=[];
+        $scope.usernames=[];
+        $scope.PID=[];
+        $scope.dataLength=0;
+        $scope.endtime=[];
+        $scope.timeRemaining=[];
         if(feedVisited==0){  //just added for control of reload
             console.log("feedVisited was 0 so we got data");
             getFeedData();
@@ -331,8 +333,8 @@ angular.module('iOpinio.controllers', [])
             dataLength=usernames.length;
             displayFeed();
         }
-/*
-        $('#feedList').delegate('li', 'vclick', function() {
+
+       /* $('#feedList').delegate('li', 'vclick', function() {
             var index = $(this).index();
             var selectedIndex="selectedIndex";
             window.localStorage.setItem(selectedIndex, $(this).index());  //i added this semi colon july 9th
@@ -344,31 +346,42 @@ angular.module('iOpinio.controllers', [])
             }
           }
             window.location.hash="chart";
-        });
-         $("#refreshPersonalFeed").on("tap", function(){
+        });  */
+         $scope.refresh=function(){
             console.log("refreshing feed");
-            console.log("Stopping timeCircles and dataLength is: "+dataLength);
-            for(var i=0; i<dataLength; i++){
-              if(timeRemaining[i]>=0){
+            console.log("Stopping timeCircles and dataLength is: "+$scope.dataLength);
+            for(var i=0; i<$scope.dataLength; i++){
+              if($scope.timeRemaining[i]>=0){
                     var input="."+i;
-                    $(input).TimeCircles().stop();
+                    //$(input).TimeCircles().stop();
                 }
             }
-            $('#feedList').empty();
+            //$('#feedList').empty();
             resetFeedArrays();
             getFeedData();            
-        });
+        };
 
         function getFeedData(){
-            $.get("https://web.engr.illinois.edu/~chansky2/personalFeed.php",function(data){
-               // console.log("data: "+data);
+            iOpinio.get("https://web.engr.illinois.edu/~chansky2/personalFeed.php").success(function(data){
+                console.log("data: "+data);
+                            console.log("response is: "+data);
+                            //console.log("parsed data: "+JSON.parse(data));
+                            var obj = data;            
+                           // console.log("obj[i][gn]: "+obj[0]["gn"]);
+                            console.log("length of obj is: "+obj.length);
+                            //console.log("obj[i].gn: "+obj[i].gn);
+                            for(var i = 0; i < obj.length; i++) {
+                             // if(inArray(obj[i].gn, groupNames)==-1)  //to prevent duplicates
+                                console.log("obj at: "+i+" is: "+obj[i]["username"]+"\n");
+                                //$scope.groupNames.push(obj[i]["gn"]);     
+                            }
                 if(data!= null && data!==undefined){    //VERY CRAPPY NULL CHECKER....
-                    var obj = jQuery.parseJSON( data );
+                    //var obj = JSON.parse( data );
                     for(var i = 0; i < obj.length; i++) {
-                        usernames.push(obj[i].username);
-                        PID.push(obj[i].PID);
-                        endtime.push(obj[i].endtime);
-                        timeRemaining.push(obj[i].timeRemaining);
+                        $scope.usernames.push(obj[i].username);
+                        $scope.PID.push(obj[i].PID);
+                        $scope.endtime.push(obj[i].endtime);
+                        $scope.timeRemaining.push(obj[i].timeRemaining);
                     }
                     dataLength=usernames.length;
                     displayFeed();
@@ -377,10 +390,10 @@ angular.module('iOpinio.controllers', [])
                     var p_idArr= "p_idArr";
                     var timeRemainingArr="timeRemainingArr";
                     if(typeof(window.localStorage) != 'undefined'){ 
-                        window.localStorage.setItem(userArr, JSON.stringify(usernames));
-                        window.localStorage.setItem(endtimeArr, JSON.stringify(endtime));
-                        window.localStorage.setItem(p_idArr, JSON.stringify(PID));
-                        window.localStorage.setItem(timeRemainingArr, JSON.stringify(timeRemaining));
+                        window.localStorage.setItem(userArr, JSON.stringify($scope.usernames));
+                        window.localStorage.setItem(endtimeArr, JSON.stringify($scope.endtime));
+                        window.localStorage.setItem(p_idArr, JSON.stringify($scope.PID));
+                        window.localStorage.setItem(timeRemainingArr, JSON.stringify($scope.timeRemaining));
                     } 
                     else{ 
                         console.log("store FAILED");
@@ -389,12 +402,13 @@ angular.module('iOpinio.controllers', [])
                 }
                 else{
                     var word="NO FOLLOWERS";
-                    $('#feedList').append('<li><a href="">' + word + '</a></li>').listview('refresh');
+                    console.log("no followers");
+                   // $('#feedList').append('<li><a href="">' + word + '</a></li>').listview('refresh');
                 }
             });  //this is clsing the get!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!    
         }
 
-        function displayFeed(){
+       /* function displayFeed(){
             console.log("displayFeed called");
             for (var j = 0; j < dataLength; j++) {   //not sure why this needs to be in the get
                 var clock="display:inline-block; width:100%; height:20%;";
@@ -442,16 +456,16 @@ angular.module('iOpinio.controllers', [])
                             $('#feedList').trigger('create');
 
                 $('#feedList').listview('refresh');
-        }
+        } */
 
         function resetFeedArrays(){
-            usernames=[];
-            PID=[];
-            dataLength=0;
-            endtime=[];
-            timeRemaining=[];
+            $scope.usernames=[];
+            $scope.PID=[];
+            $scope.dataLength=0;
+            $scope.endtime=[];
+            $scope.timeRemaining=[];
         }
-        */
+        
     })
 
 
@@ -715,7 +729,7 @@ $ionicModal.fromTemplateUrl('modal.html', function($ionicModal) {
                     }  
                 }
                 else{
-                    $location.path("createPoll");
+                    $location.path("createPoll");   //change back!!!!!!!!
                 }
              });
         }

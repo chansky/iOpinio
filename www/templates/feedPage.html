@@ -1,8 +1,16 @@
-    <div data-role="header">
-        <h1>Pol</h1>
-        <a data-role="button" data-theme="b" id="refreshPersonalFeed" class="ui-btn ui-corner-all ui-icon-refresh ui-btn-icon-notext">Refresh Icon</a>
-    </div>
-        <div data-role="content" id="personalFeedContent" style="height:100vh">
-            <ul id="feedList" data-role="listview"></ul>
-        </div>
-    </div>
+<view title="'iOpinio'" class="pollbg">
+  <content class="padding" has-header="true" has-subheader="true" style="text-align:center">
+
+      <div data-role="header">
+                   <h1>Feed</h1>
+      </div>
+      <button class="button button-positive button-block" id="refresh" ng-click="refresh()" padding="true"> Refresh!</button>
+      <div class="opt">
+      <ion-item ng-repeat="name in usernames"  padding="true">
+          <a class="item item-icon-left">
+            <p>{{ name }}</p>
+          </a>
+      </ion-item>
+      </div>
+  </content>
+</view>
